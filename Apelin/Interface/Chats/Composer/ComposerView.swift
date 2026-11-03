@@ -129,7 +129,11 @@ class ComposerView: ComposerSectionView {
             band.accessibilityElementsHidden = presentingRequest
         }
 
-        let inputTop = place(attachmentsBar, at: spacing)
+        // The model bar and the import panel take the slot above the input.
+        var y = place(modelBar, at: spacing)
+        y = place(controlPanel, at: y)
+
+        let inputTop = place(attachmentsBar, at: y)
         place(inputEditor, at: inputTop)
         // the attachments bar, once it is here, shares the input's ground
         let inputFrame = attachmentsBar.heightPublisher.value > 0
@@ -140,7 +144,7 @@ class ComposerView: ComposerSectionView {
         // collapsed to nothing.
         place(
             approvalSection,
-            at: spacing,
+            at: inputEditor.frame.minY,
             height: presentingRequest ? approvalSection.heightPublisher.value : inputFrame.height,
         )
         shadowContainer.frame = presentingRequest
@@ -150,16 +154,11 @@ class ComposerView: ComposerSectionView {
         dropContainer.frame = shadowContainer.frame
         dropColorView.frame = dropContainer.bounds
 
-        var finalHeight = shadowContainer.frame.maxY
-        var y = finalHeight + spacing
-        for band in [modelBar, controlPanel] {
-            y = place(band, at: y)
-            if band.heightPublisher.value > 0 {
-                finalHeight = band.frame.maxY
-            }
-        }
-
-        heightPublisher.send(finalHeight)
+        // While a request is shown the composer grows to the taller approval
+        // card; otherwise it ends at the input band.
+        heightPublisher.send(
+            presentingRequest ? approvalSection.frame.maxY : inputEditor.frame.maxY,
+        )
     }
 
     /// Lays `band` out across the composer at `y`, as tall as it asks unless
