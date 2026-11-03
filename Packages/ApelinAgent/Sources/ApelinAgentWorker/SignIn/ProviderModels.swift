@@ -26,6 +26,14 @@ enum ProviderModels {
     }
 
     static func list(_ provider: AgentProvider, credentials: OAuthCredentials) -> [String] {
+        if TraeSite(storeID: provider.storeID) != nil {
+            var models = TraeModels.fallback
+            if case let .string(model)? = credentials.extras[AgentSignInField.defaultModel.rawValue], !model.isEmpty {
+                models.removeAll { $0 == model }
+                models.insert(model, at: 0)
+            }
+            return models
+        }
         let catalog = catalogKey(provider, credentials: credentials)
         var models = catalog.map { ModelsCatalog.models(for: $0).map(\.id) } ?? []
         if case let .string(model)? = credentials.extras[AgentSignInField.defaultModel.rawValue], !model.isEmpty {
@@ -60,6 +68,12 @@ enum ProviderModels {
     }
 
     static func fetch(_ provider: AgentProvider, credentials: OAuthCredentials) async throws -> [String] {
+        if let site = TraeSite(storeID: provider.storeID) {
+            if let live = await TraeModels.live(site: site, credentials: credentials), !live.isEmpty {
+                return live
+            }
+            return list(provider, credentials: credentials)
+        }
         guard usesAPIKey(provider, credentials: credentials),
               let request = modelRequest(provider, credentials: credentials)
         else { return list(provider, credentials: credentials) }

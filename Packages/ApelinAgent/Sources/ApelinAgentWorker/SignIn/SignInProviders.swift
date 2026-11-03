@@ -14,7 +14,7 @@ public extension AgentProvider {
     static let signInOrder: [AgentProvider] = {
         let order: [AgentProvider] = [
             .openAICodex, .anthropicOAuth, .githubCopilot, .cursor,
-            .workBuddyAI, .workBuddy, .kimiCoding, .kimiCodingGlobal, .xai, .openRouter,
+            .workBuddyAI, .workBuddy, .trae, .traeIntl, .kimiCoding, .kimiCodingGlobal, .xai, .openRouter,
             .zai, .zaiCodingCN, .qoder, .qoderCN, .kiro, .devin,
             .openAI, .deepSeek, .openCodeGo, .openCodeZen, .google, .anthropic, .openAICompatible,
         ]
@@ -36,6 +36,8 @@ public extension AgentProvider {
         case .qoderCN: QoderSite.cn.id
         case .workBuddy: WorkBuddySite.china.id
         case .workBuddyAI: WorkBuddySite.international.id
+        case .trae: TraeSite.china.id
+        case .traeIntl: TraeSite.international.id
         case .kimiCoding: KimiSite.china.id
         case .kimiCodingGlobal: KimiSite.global.id
         case .xai: "xai"
@@ -60,7 +62,7 @@ public extension AgentProvider {
         case .anthropicOAuth, .openAICodex, .cursor, .devin, .kiro, .qoder, .qoderCN, .workBuddy, .workBuddyAI,
              .zai, .zaiCodingCN, .openRouter:
             .browser
-        case .anthropic, .openAICompatible, .openAI, .google, .deepSeek, .openCodeGo, .openCodeZen:
+        case .anthropic, .openAICompatible, .openAI, .google, .deepSeek, .openCodeGo, .openCodeZen, .trae, .traeIntl:
             .apiKey
         }
     }
@@ -122,6 +124,17 @@ enum SignInKeyForms {
         Form(provider: .deepSeek, fields: [
             KeyField(field: .apiKey, required: true, placeholder: "sk-…"),
             KeyField(field: .baseURL, required: false, defaultValue: DeepSeekProvider.baseURL),
+        ]),
+        // Trae's key is the account's Cloud-IDE-JWT or its refresh token; the
+        // address is the build's remote gate unless another mirror serves the
+        // account.
+        Form(provider: .trae, fields: [
+            KeyField(field: .apiKey, required: true, placeholder: "Cloud-IDE-JWT …"),
+            KeyField(field: .baseURL, required: false, defaultValue: TraeSite.china.remoteBase),
+        ]),
+        Form(provider: .traeIntl, fields: [
+            KeyField(field: .apiKey, required: true, placeholder: "Cloud-IDE-JWT …"),
+            KeyField(field: .baseURL, required: false, defaultValue: TraeSite.international.remoteBase),
         ]),
         Form(provider: .openCodeGo, fields: [
             KeyField(field: .apiKey, required: true, placeholder: "oc_sk_…"),

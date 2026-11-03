@@ -24,6 +24,8 @@ extension AgentProvider {
         case .qoderCN: String(localized: "Qoder CN")
         case .workBuddy: String(localized: "WorkBuddy")
         case .workBuddyAI: String(localized: "WorkBuddy AI")
+        case .trae: String(localized: "Trae")
+        case .traeIntl: String(localized: "Trae International")
         case .kimiCoding: String(localized: "Kimi For Coding")
         case .kimiCodingGlobal: String(localized: "Kimi For Coding Global")
         case .xai: String(localized: "Grok")
@@ -52,6 +54,8 @@ extension AgentProvider {
         case .qoderCN: UIImage(named: "ProviderQoderCN")
         case .workBuddy: UIImage(named: "ProviderWorkBuddy")
         case .workBuddyAI: UIImage(named: "ProviderWorkBuddyAI")
+        // No mark of its own yet: the shared OpenAI-compatible one stands in.
+        case .trae, .traeIntl: UIImage(named: "ProviderOpenAICompatible")
         case .kimiCoding, .kimiCodingGlobal: UIImage(named: "ProviderKimi")
         case .xai: UIImage(named: "ProviderGrok")
         case .zai: UIImage(named: "ProviderZai")
@@ -91,6 +95,10 @@ extension AgentProvider {
             String(localized: "Sign in to WorkBuddy with your CodeBuddy China plan.")
         case .workBuddyAI:
             String(localized: "Sign in to WorkBuddy AI with your CodeBuddy international plan.")
+        case .trae:
+            String(localized: "Use a Trae token from the Trae desktop app.")
+        case .traeIntl:
+            String(localized: "Use a Trae token from the Trae International desktop app.")
         case .kimiCoding:
             String(localized: "Sign in with your Kimi coding plan.")
         case .kimiCodingGlobal:
